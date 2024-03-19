@@ -8,19 +8,18 @@ const mongoose = require("mongoose");
 //Database variables and connection
 const mongoString = process.env.DATABASE_URL;
 
-mongoose.connect(mongoString);
-const database = mongoose.connection;
+//Connecting to mongodb
+mongoose
+  .connect(mongoString)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => console.error("Failed to connect to MongoDB:", err));
 
-database.on("error", (error) => {
-  console.log(error);
-});
-
-database.once("connected", () => {
-  console.log("Database Connected");
-});
-
+//This line is use to parse json body for request
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 //API endpoint
 app.use(`/v1`, router);
 

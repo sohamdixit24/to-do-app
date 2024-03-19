@@ -8,12 +8,12 @@ const getAllItems = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-  res.send(obj);
+  // res.send(obj);
 };
 
 //Add an item
 const addItem = async (req, res) => {
-  console.log(req.body);
+  console.log(`Add item =====> ${req.body}`);
   const data = new todoModel({
     content: req.body.content,
   });
@@ -28,11 +28,35 @@ const addItem = async (req, res) => {
 
 //Delete the to do list item
 const deleteItem = async (req, res) => {
-  res.send(`You have removed item ${req.params["id"]}`);
+  const id = req.params["_id"];
+  try {
+    const data = await todoModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "Sucessfully Deleted" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+//Update an item
+const updateItem = async (req, res) => {
+  const id = req.params._id;
+  const updateData = req.body;
+  const options = { new: true };
+  try {
+    const dataToSave = await todoModel.findByIdAndUpdate(
+      id,
+      updateData,
+      options
+    );
+    res.status(200).json({ message: "Sucessfully Updated",result: dataToSave });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 module.exports = {
   getAllItems,
   deleteItem,
   addItem,
+  updateItem,
 };
